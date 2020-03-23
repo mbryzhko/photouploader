@@ -1,0 +1,13 @@
+
+spring:
+  application:
+    name: "Google Photo Uploader"
+
+#workingDirectory:
+uploaders:
+  google:
+    folderPath: jpeg
+    fileExtensions: jpeg, jpg
+    credentials:
+      accessToken:
+
