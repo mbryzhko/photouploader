@@ -1,7 +1,6 @@
 package bma.photo.uploader.uploader;
 
 import bma.photo.uploader.config.UploaderProperties;
-import org.springframework.util.Assert;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
