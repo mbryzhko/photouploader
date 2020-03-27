@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -z "$JAVA_HOME" ] ; then
+  JAVACMD=`which java`
+else
+  JAVACMD="$JAVA_HOME/bin/java"
+fi
+
+JAR_FILE="$PU_HOME/bin/pu.jar"
+
+exec "$JAVACMD" -jar "$JAR_FILE"
