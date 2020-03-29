@@ -6,6 +6,15 @@ else
   JAVACMD="$JAVA_HOME/bin/java"
 fi
 
+if [ ! -x "$JAVACMD" ] ; then
+  echo "The JAVA_HOME environment variable is not defined correctly" >&2
+  echo "This environment variable is needed to run this program" >&2
+  echo "NB: JAVA_HOME should point to a JDK not a JRE" >&2
+  exit 1
+fi
+
 JAR_FILE="$PU_HOME/bin/pu.jar"
 
-exec "$JAVACMD" -jar "$JAR_FILE"
+CONFIG_FILE="$PU_HOME/bin/pu.yaml"
+
+exec "$JAVACMD" -jar "$JAR_FILE" --spring.config.additional-location="file:$CONFIG_FILE"
