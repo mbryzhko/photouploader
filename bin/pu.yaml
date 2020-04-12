@@ -1,5 +1,0 @@
-uploaders:
-  google:
-    credentials:
-      accessToken: {replace with access token}
-

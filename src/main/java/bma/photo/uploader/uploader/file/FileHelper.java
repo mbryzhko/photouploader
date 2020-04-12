@@ -45,6 +45,6 @@ public class FileHelper {
     }
 
     private boolean hasRequestedExtension(String fileName) {
-        return extensions.stream().anyMatch(fileName::endsWith);
+        return extensions.stream().anyMatch(fileName.toLowerCase()::endsWith);
     }
 }

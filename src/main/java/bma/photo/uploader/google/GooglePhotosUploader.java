@@ -69,6 +69,9 @@ public class GooglePhotosUploader implements Uploader {
     private String deriveAlbumName(UploaderRequest request) {
         String folderPathStr = request.getUploadFolder().toString();
 
+        // Windows OS
+        folderPathStr = folderPathStr.replace('\\', '/');
+
         Matcher matcher = ALBUM_NAME_MASK.matcher(folderPathStr);
         if (!matcher.matches() || matcher.groupCount() != 1) {
             throw new RuntimeException("Album name cannot be derived from path: " + folderPathStr);
