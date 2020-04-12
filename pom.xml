@@ -98,10 +98,8 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-<!--                                <copy todir="${project.basedir}/bin">-->
-<!--                                    <fileset dir="${project.basedir}/src/main/bin"/>-->
-<!--                                </copy>-->
-                                <copy file="${project.basedir}/target/photo-uploader-${project.version}.jar" tofile="${project.basedir}/bin/pu.jar"/>
+                                <copy file="${project.basedir}/target/photo-uploader-${project.version}.jar"
+                                      tofile="${project.basedir}/bin/pu.jar" overwrite="true"/>
                             </tasks>
                         </configuration>
                         <goals>
