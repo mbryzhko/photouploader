@@ -44,6 +44,7 @@ public class GooglePhotosUploader implements Uploader {
     private static final Logger logger = LoggerFactory.getLogger(GooglePhotosUploader.class);
     private static final String OAUTH_ACCESS_TOKEN = "accessToken";
     private static final Pattern ALBUM_NAME_MASK = Pattern.compile("\\S*/(\\d{4}-\\d{2}-\\d{2}.*|\\d{4}_\\d{2}_\\d{2}.*)/\\S*");
+    private static final int MAX_UPLOAD_BATCH_SIZE = 50; // Google Photos API Restriction.
 
     @Override
     public void upload(UploaderRequest request) {
@@ -58,10 +59,15 @@ public class GooglePhotosUploader implements Uploader {
             List<String> mediaItems = new ArrayList<>();
             new FileHelper(request).withFiles(file -> {
                 mediaItems.add(helper.uploadMedia(file));
+                if (mediaItems.size() >= MAX_UPLOAD_BATCH_SIZE) {
+                    helper.addMediaItemsIntoAlbum(mediaItems, album.getId());
+                    mediaItems.clear();
+                }
             });
 
-            helper.addMediaItemsIntoAlbum(mediaItems, album.getId());
-
+            if (mediaItems.size() > 0) {
+                helper.addMediaItemsIntoAlbum(mediaItems, album.getId());
+            }
         });
 
     }
