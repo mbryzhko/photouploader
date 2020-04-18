@@ -37,7 +37,11 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- * Required Scope: https://www.googleapis.com/auth/photoslibrary
+ * Google Photos uploader that uses API to upload photos.
+ * <br/>
+ * Required Scope: https://www.googleapis.com/auth/photoslibrary.
+ *
+ * {@see https://developers.google.com/photos/library/guides/overview}
  */
 public class GooglePhotosUploader implements Uploader {
 

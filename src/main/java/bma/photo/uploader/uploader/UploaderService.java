@@ -1,9 +1,13 @@
 package bma.photo.uploader.uploader;
 
-import bma.photo.uploader.config.UploaderProperties;
-
+/**
+ * Main entry point into uploader service.
+ */
 public interface UploaderService {
 
+    /**
+     * Prepare properties and delegate uploading to concrete uploader.
+     */
     void runUpload();
 
 }
