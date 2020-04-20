@@ -21,6 +21,7 @@ import com.google.photos.types.proto.Album;
 import com.google.rpc.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +44,7 @@ import static java.util.stream.Collectors.groupingBy;
  *
  * {@see https://developers.google.com/photos/library/guides/overview}
  */
+@Service("google")
 public class GooglePhotosUploader implements Uploader {
 
     private static final Logger logger = LoggerFactory.getLogger(GooglePhotosUploader.class);

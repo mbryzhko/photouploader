@@ -1,38 +1,33 @@
 package bma.photo.uploader.uploader;
 
-import bma.photo.uploader.PhotoUploaderApplication;
-import bma.photo.uploader.config.ApplicationProperties;
 import bma.photo.uploader.config.UploaderProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Service
 public class UploaderServiceImpl implements UploaderService, ApplicationContextAware {
 
     private static final Logger logger = LoggerFactory.getLogger(UploaderServiceImpl.class);
 
-    private ApplicationProperties applicationProperties;
-
     private ApplicationContext applicationContext;
 
-    public UploaderServiceImpl(ApplicationProperties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
-
     @Override
-    public void runUpload() {
-        applicationProperties.getUploaders().forEach((name, prop) -> {
+    public void runUpload(UploaderServiceProperties properties) {
+        properties.getUploaders().forEach((name, uploaderProperties) -> {
             logger.info("Initializing '{}' uploader", name);
             try {
-                applicationContext.getBean(name, Uploader.class).upload(createUploadRequest(prop));
+                applicationContext.getBean(name, Uploader.class)
+                        .upload(createUploadRequest(properties.getWorkingDirectory(), uploaderProperties));
             } catch (UploaderException e ) {
-                if (applicationProperties.isVerbose()) {
+                if (properties.isVerbose()) {
                     logger.error("Error uploading. ", e);
                 } else {
                     logger.error("Error uploading. " + e.getMessage());
@@ -43,14 +38,14 @@ public class UploaderServiceImpl implements UploaderService, ApplicationContextA
         });
     }
 
-    private UploaderRequest createUploadRequest(UploaderProperties prop) {
+    private UploaderRequest createUploadRequest(String workingDirectory, UploaderProperties prop) {
         Path workingDir = Paths.get("").toAbsolutePath();
 
-        if (applicationProperties.isWorkingDirectoryDefined()) {
-            workingDir = Paths.get(applicationProperties.getWorkingDirectory());
+        if (!StringUtils.isEmpty(workingDirectory)) {
+            workingDir = Paths.get(workingDirectory);
         }
 
-        return new UploaderRequest(prop, workingDir);
+        return new UploaderRequest(prop, workingDir.toAbsolutePath());
     }
 
     @Override

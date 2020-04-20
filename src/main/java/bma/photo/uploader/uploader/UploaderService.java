@@ -8,6 +8,6 @@ public interface UploaderService {
     /**
      * Prepare properties and delegate uploading to concrete uploader.
      */
-    void runUpload();
+    void runUpload(UploaderServiceProperties properties);
 
 }
