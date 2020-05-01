@@ -17,4 +17,6 @@ JAR_FILE="$PU_HOME/bin/pu.jar"
 
 CONFIG_FILE="$PU_HOME/bin/pu.yaml"
 
-exec "$JAVACMD" -jar "$JAR_FILE" --spring.config.additional-location="file:$CONFIG_FILE"
+ARGS="$@"
+
+exec "$JAVACMD" -jar "$JAR_FILE" $ARGS --spring.config.additional-location="file:$CONFIG_FILE"

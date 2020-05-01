@@ -6,12 +6,18 @@ import bma.photo.uploader.uploader.UploaderServiceProperties;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
 public class CommandsServiceImpl implements CommandsService, CommandLineRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(CommandsServiceImpl.class);
 
     private final UploaderService uploaderService;
     private final ApplicationProperties applicationProperties;
@@ -35,6 +41,8 @@ public class CommandsServiceImpl implements CommandsService, CommandLineRunner {
 
     @Override
     public void handleCliArguments(String[] args) {
+        logger.debug(Arrays.toString(args));
+
         JCommander commandListParser = createCommandListParser(args);
 
         String parsedCommand = commandListParser.getParsedCommand();
@@ -48,6 +56,7 @@ public class CommandsServiceImpl implements CommandsService, CommandLineRunner {
 
     private JCommander createCommandListParser(String[] args) {
         JCommander result = JCommander.newBuilder()
+                .acceptUnknownOptions(true)
                 .addObject(this)
                 .addCommand(uploadCommand)
                 .build();
