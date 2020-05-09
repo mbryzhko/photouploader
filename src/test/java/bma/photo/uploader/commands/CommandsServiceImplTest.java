@@ -24,12 +24,15 @@ class CommandsServiceImplTest {
     @Mock
     private UploaderService uploaderService;
 
+    @Mock
+    private AlbumCommand albumCommand;
+
     private ApplicationProperties applicationProperties;
 
     @BeforeEach
     public void setup() {
         applicationProperties = new ApplicationProperties();
-        commandsService = new CommandsServiceImpl(uploaderService, applicationProperties);
+        commandsService = new CommandsServiceImpl(uploaderService, applicationProperties, albumCommand);
     }
 
     @Test
@@ -93,6 +96,16 @@ class CommandsServiceImplTest {
         commandsService.handleCliArguments(args);
 
         Mockito.verify(uploaderService, Mockito.times(0)).runUpload(Mockito.isA(UploaderServiceProperties.class));
+    }
+
+    @Test
+    public void showUsageAndErrorWhenIncorrectInput() {
+        var args = new String[]{"album"};
+
+        commandsService.handleCliArguments(args);
+
+        Mockito.verify(albumCommand, Mockito.times(0)).run();
+
     }
 
     private void appPropsWithGoogleUploader() {

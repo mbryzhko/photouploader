@@ -18,7 +18,7 @@ For instance:
 
 ## How to retrieve Google Photos Access Key
 1. Open [Google OAuth Playground](https://developers.google.com/oauthplayground/) in a browser.
-2. Step #1. Specify scope: `https://www.googleapis.com/auth/photoslibrary` and press `Authorize APIs`.
+2. Step #1. Specify scope: `https://www.googleapis.com/auth/photoslibrary, https://www.googleapis.com/auth/photoslibrary.sharing` and press `Authorize APIs`.
 3. On the next screen select your Google Photos Account.
 4. Step #2. Press button to exchange auth code for the Access Token.
 5. Copy value of the Access token.

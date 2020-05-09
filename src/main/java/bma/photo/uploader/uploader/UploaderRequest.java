@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-public class UploaderRequest {
+public class UploaderRequest implements CredentialsAware {
 
     private final Path uploadFolder;
     private final Set<String> fileExtensions;

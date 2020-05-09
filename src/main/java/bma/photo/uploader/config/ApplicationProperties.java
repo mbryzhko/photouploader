@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class ApplicationProperties {
 
+    public static final String GOOGLE_PHOTO_RROPS_NAME = "google";
+
     private Map<String, UploaderProperties> uploaders = new HashMap<>();
     private String workingDirectory = null;
     private boolean verbose = false;

@@ -5,6 +5,7 @@ import bma.photo.uploader.uploader.UploaderService;
 import bma.photo.uploader.uploader.UploaderServiceProperties;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +22,20 @@ public class CommandsServiceImpl implements CommandsService, CommandLineRunner {
 
     private final UploaderService uploaderService;
     private final ApplicationProperties applicationProperties;
-    private UploadCommand uploadCommand;
+    private final AlbumCommand albumCommand;
+    private final UploadCommand uploadCommand;
 
     @Parameter(names = "-v", description = "Verbose")
     private boolean argVerbose;
 
     @Autowired
-    public CommandsServiceImpl(UploaderService uploaderService, ApplicationProperties applicationProperties) {
+    public CommandsServiceImpl(UploaderService uploaderService,
+                               ApplicationProperties applicationProperties,
+                               AlbumCommand albumCommand) {
         this.uploaderService = uploaderService;
         this.applicationProperties = applicationProperties;
+        this.albumCommand = albumCommand;
         this.uploadCommand = new UploadCommand();
-
     }
 
     @Override
@@ -43,25 +47,36 @@ public class CommandsServiceImpl implements CommandsService, CommandLineRunner {
     public void handleCliArguments(String[] args) {
         logger.debug(Arrays.toString(args));
 
-        JCommander commandListParser = createCommandListParser(args);
+        JCommander commandListParser = createCommandListParser();
 
-        String parsedCommand = commandListParser.getParsedCommand();
+        try {
+            commandListParser.parse(args);
 
-        if (UploadCommand.NAME.equals(parsedCommand)) {
-            uploadCommand.run();
-        } else {
+            String parsedCommand = commandListParser.getParsedCommand();
+
+            if (UploadCommand.NAME.equals(parsedCommand)) {
+                uploadCommand.run();
+            } else if (AlbumCommand.NAME.equals(parsedCommand)) {
+                albumCommand.run();
+            } else {
+                commandListParser.usage();
+            }
+
+        } catch (ParameterException e) {
+            logger.error("Error: {}", e.getMessage());
             commandListParser.usage();
         }
+
     }
 
-    private JCommander createCommandListParser(String[] args) {
+    private JCommander createCommandListParser() {
         JCommander result = JCommander.newBuilder()
                 .acceptUnknownOptions(true)
                 .addObject(this)
                 .addCommand(uploadCommand)
+                .addCommand(albumCommand)
+//                .verbose(1)
                 .build();
-
-        result.parse(args);
 
         return result;
     }
