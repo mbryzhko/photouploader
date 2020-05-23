@@ -11,8 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -36,6 +40,7 @@ public class GooglePhotosUploader implements Uploader {
     private static final int MAX_UPLOAD_BATCH_SIZE = 50; // Google Photos API Restriction.
 
     private final GooglePhotoApiClientFactory apiClientFactory;
+    private int uploadBatchSize = MAX_UPLOAD_BATCH_SIZE;
 
     @Autowired
     public GooglePhotosUploader(GooglePhotoApiClientFactory apiClientFactory) {
@@ -47,13 +52,12 @@ public class GooglePhotosUploader implements Uploader {
         logger.info("Starting Google Photo Uploader with request: {}", request);
         
         withGooglePhotoHelper(request, helper -> {
-
-            Album album = helper.createNewAlbum(deriveAlbumName(request));
+            Album album = getAlbumFromProperties(request, helper).orElseGet(() -> helper.createNewAlbum(deriveAlbumName(request)));
 
             List<String> mediaItems = new ArrayList<>();
             new FileHelper(request).withFiles(file -> {
                 mediaItems.add(helper.uploadMedia(file));
-                if (mediaItems.size() >= MAX_UPLOAD_BATCH_SIZE) {
+                if (mediaItems.size() >= uploadBatchSize) {
                     helper.addMediaItemsIntoAlbum(mediaItems, album.getId());
                     mediaItems.clear();
                 }
@@ -63,7 +67,24 @@ public class GooglePhotosUploader implements Uploader {
                 helper.addMediaItemsIntoAlbum(mediaItems, album.getId());
             }
         });
+    }
 
+    private Optional<Album> getAlbumFromProperties(UploaderRequest request, GooglePhotoHelper helper) {
+        Path propsFilePath = request.getWorkingDir().resolve(".uploader");
+        if (Files.isReadable(propsFilePath)) {
+            try (FileInputStream fis = new FileInputStream(propsFilePath.toFile())) {
+                Properties properties = new Properties();
+                properties.load(fis);
+                String albumId = properties.getProperty("google_photo_album_id");
+                if (!StringUtils.isEmpty(albumId)) {
+                    return Optional.of(helper.getAlbumById(albumId));
+                }
+            } catch (IOException e) {
+                logger.warn("Cannot get id of existing album. Error: " + e.getMessage());
+            }
+        }
+
+        return Optional.empty();
     }
 
     private String deriveAlbumName(UploaderRequest request) {
@@ -80,7 +101,7 @@ public class GooglePhotosUploader implements Uploader {
         return matcher.group(1);
     }
 
-    public void withGooglePhotoHelper(CredentialsAware credentials, Consumer<GooglePhotoHelper> withHelper) {
+    private void withGooglePhotoHelper(CredentialsAware credentials, Consumer<GooglePhotoHelper> withHelper) {
         try (var photosLibraryClient = apiClientFactory.create(credentials)) {
             withHelper.accept(new GooglePhotoHelper(photosLibraryClient));
         } catch (UnauthenticatedException e) {
@@ -90,6 +111,13 @@ public class GooglePhotosUploader implements Uploader {
         } catch (RuntimeException e) {
             throw new UploaderException("Unexpected Error. " + e.getMessage(), e);
         }
+    }
 
+    public int getUploadBatchSize() {
+        return uploadBatchSize;
+    }
+
+    public void setUploadBatchSize(int uploadBatchSize) {
+        this.uploadBatchSize = uploadBatchSize;
     }
 }

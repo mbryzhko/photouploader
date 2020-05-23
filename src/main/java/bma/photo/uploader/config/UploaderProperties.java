@@ -5,6 +5,9 @@ import java.util.Set;
 
 public class UploaderProperties {
 
+    /**
+     * Relative path of folder with files.
+     */
     private String folderPath;
 
     private Set<String> fileExtensions;

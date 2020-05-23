@@ -39,6 +39,10 @@ public class GooglePhotoHelper {
         return album;
     }
 
+    public Album getAlbumById(String albumId) {
+        return client.getAlbum(albumId);
+    }
+
     public String uploadMedia(File photoFile) {
         logger.info("Uploading: " + photoFile);
 

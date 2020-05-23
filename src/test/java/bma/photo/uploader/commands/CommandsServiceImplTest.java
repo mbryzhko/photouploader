@@ -100,7 +100,7 @@ class CommandsServiceImplTest {
 
     @Test
     public void showUsageAndErrorWhenIncorrectInput() {
-        var args = new String[]{"album"};
+        var args = new String[]{"foo"};
 
         commandsService.handleCliArguments(args);
 

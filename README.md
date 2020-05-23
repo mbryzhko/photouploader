@@ -23,6 +23,13 @@ For instance:
 4. Step #2. Press button to exchange auth code for the Access Token.
 5. Copy value of the Access token.
 
-## How to run
+## Usage
+### Upload
 1. Navigate to a directory with images that should be uploaded.
+2. If files should be uploaded to already existing album then create a file `.uploader` and add `google_photo_album_id=<album reference>.` 
 2. Run CLI command: `pu upload`
+
+### Get Album Info
+* Get Album by ID: `pu album -id=<album reference>`
+* Get Album by Name: `pu album -name=<album name>` 
+
