@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>bma.google.photo</groupId>
     <artifactId>photo-uploader</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.target>11</maven.compiler.target>
@@ -117,6 +117,6 @@
         <connection>scm:git:git@github.com:mbryzhko/photouploader.git</connection>
         <developerConnection>scm:git:git@github.com:mbryzhko/photouploader.git</developerConnection>
         <url>https://github.com/mbryzhko/photouploader</url>
-      <tag>photo-uploader-1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
